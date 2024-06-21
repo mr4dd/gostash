@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/static/css/style.css" rel="stylesheet">
+	</head>
+	<body>
+		
+		<div class="header">
+			<h1 class="header-h1">goStash</h1>
+		</div>
+		
+		<div class="main">
+			<div class="entries">
+			</div>
+		</div>
+		
+		<div class="infoContainer" style="display: none">
+			<form class="formData">
+				<input name="id" type="number" placeholder="id" />
+				<input name="quantity" type="number" placeholder="quantity" />
+				<input name="name" type="text" placeholder="name" />
+				<input name="category" type="text" placeholder="category" />
+				<input name="newselector" type="number" value=0 hidden/>
+				<button class="submitButton" type="submit">submit</button>
+			</form>
+		</div>
+
+		<script type="text/javascript" src="/static/scripts/fetchResources.js"></script>
+		<script type="text/javascript" src="/static/scripts/handleuserinteractions.js"></script>
+	</body>
+</html>
+
+<!--
+	<div class="entrycontainer">
+					<div class="entrytitle">
+						<h2 class="titleh2"></h2>
+					</div>
+					<div class="tags"></div>
+					<div class="count"></div>
+					<button class="edit"></button>
+					<button class="remove"></button>
+	</div>
+-->
+<!--
+	<div class="infoContainer">
+		<form class="formData">
+			<input name="id" type="number"/>
+			<input name="quantity" type="number"/>
+			<input name="name" type="text"/>
+			<input name="category" type="text"/>
+			<button class="submitButton" type="submit">✔️</button>
+		</form>
+	</div>
+
+id
+quantity
+name
+category
+-->
