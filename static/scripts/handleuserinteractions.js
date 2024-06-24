@@ -3,6 +3,13 @@ const InfoContainer = document.querySelector(".infoContainer");
 const form = document.querySelector(".formData");
 let isVisible = false;
 
+document.body.addEventListener('keydown', function(e) {
+  if (e.key == "Escape") {
+  	isVisible = true;
+  	ContainerDisplayManager();
+  }
+});
+
 function ContainerDisplayManager() {
 	if (isVisible){
 		InfoContainer.style.display = "none";
@@ -13,10 +20,10 @@ function ContainerDisplayManager() {
 	}	
 };
 
-addButtonPressed.addEventListener("click", () => {
-	form.children[4].value = 1;
+function newEntry(){
+	form.children[4].value = 0;
 	ContainerDisplayManager();
-});
+}
 
 const editButtonPressed = (element) => {
 	const form = document.querySelector(".formData");
@@ -55,7 +62,11 @@ form.addEventListener("submit", function(event) {
   const jsonObject = {};
   formData.forEach((value, key) => {
   	if (key == "newselector") {
-  		key = "newselector";
+  		if (value == 0) {
+		  	endpoint = '/additem';
+		  } else {
+		  	endpoint = '/edititem';
+		  }
   	}else if (key == "id" || key == "quantity") {
   		jsonObject[key] = parseInt(value);	
   	}
@@ -63,11 +74,6 @@ form.addEventListener("submit", function(event) {
     	jsonObject[key] = value;
     }
   });
-  if (formData['newselector'] == 0) {
-  	endpoint = '/additem';
-  } else {
-  	endpoint = '/edititem';
-  }
 
   fetch(endpoint, {
   	method: 'POST',
@@ -79,16 +85,22 @@ form.addEventListener("submit", function(event) {
 });
 
 function remove(element) {
-		const parent = element.parentNode;
-		const jsonObject = {}
-		jsonObject["id"] = parseInt(parent.getAttribute("data-id"));
-		jsonObject["quantity"] = 0;
-		jsonObject["name"] = "null";
-		jsonObject["category"] = "null";
-		fetch("/deleteitem", {
-			method: 'POST',
-			body: JSON.stringify(jsonObject)
-		});
+		const confirmation = confirm("are you sure you want to delete this entry?");
+		if (confirmation == false) {
+			return;
+		} else {
+			const parent = element.parentNode.parentNode;
+			const jsonObject = {}
+			jsonObject["id"] = parseInt(parent.getAttribute("data-id"));
+			console.log(jsonObject["id"]);
+			jsonObject["quantity"] = 0;
+			jsonObject["name"] = "null";
+			jsonObject["category"] = "null";
+			fetch("/deleteitem", {
+				method: 'POST',
+				body: JSON.stringify(jsonObject)
+			});
 
-		parent.remove()
+			parent.remove()
+	 }
 } 

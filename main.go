@@ -49,6 +49,7 @@ func main(){
 	http.HandleFunc("/additem", func(w http.ResponseWriter, r *http.Request) {addItem(w, r, db)})
 	http.HandleFunc("/edititem", func(w http.ResponseWriter, r *http.Request) {editItem(w, r, db)})
 	http.HandleFunc("/deleteitem", func(w http.ResponseWriter, r *http.Request) {deleteItem(w, r, db)})
+	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {search(w, r, db)})
 
 	err = http.ListenAndServe(":8000", nil)
 }
@@ -179,4 +180,55 @@ func deleteItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+func search(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if (r.Method == "POST") {
+		
+		var Data jsonData
 
+		err := json.NewDecoder(r.Body).Decode(&Data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
+		stmt, err := db.Prepare("SELECT * FROM entries WHERE name=? OR category=?;")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+
+		var entries []jsonData
+		rows, err := stmt.Query(Data.Name, Data.Category)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
+		for rows.Next(){
+			var entry jsonData
+			err := rows.Scan(&entry.ID, &entry.Name, &entry.Quantity, &entry.Category)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			entries = append(entries, entry)
+		}
+		if err = rows.Err(); err != nil {
+        		http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+    		}
+		
+		Json, err := json.Marshal(entries)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(Json)
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
