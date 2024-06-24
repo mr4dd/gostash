@@ -68,4 +68,4 @@ Contributions are welcome! If you have any ideas or improvements, feel free to f
 
 ## License
 
-This project is licensed under the GNU License - see the [LICENSE](https://github.com/mr4dd/gostash/LICENSE) file for details.
+This project is licensed under the GNU License - see the [LICENSE](https://github.com/mr4dd/gostash/blob/main/LICENSE) file for details.
