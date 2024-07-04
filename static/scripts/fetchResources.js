@@ -10,7 +10,8 @@ const fetchData = async () => {
 }
 
 const render = (data) => {
-    parent.innerHTML = '<button class="new" onClick=newEntry()>+</button>';
+    parent.innerHTML = `<p class="itemCount">Found ${data.length} items!</p>`
+    parent.innerHTML += '<button class="new" onClick=newEntry()>+</button>';
     try {
         data.forEach((entry, index) => {
             const container = document.createElement("div");
@@ -20,6 +21,7 @@ const render = (data) => {
                 <div class="informationDiv">
                     <div class="entrytitle">
                         <h2 class="titleh2">${entry.Name}</h2>
+                        <h2 class="description">${entry.Description}</h2>
                     </div>
                     <div class="secondaryInfo">
                         <div class="tags">

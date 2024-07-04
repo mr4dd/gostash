@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title></title>
+		<title>gostash</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="/static/css/style.css" rel="stylesheet">
@@ -26,11 +26,12 @@
 		
 		<div class="infoContainer" style="display: none">
 			<form class="formData">
-				<input name="id" type="number" placeholder="id" />
+				<input name="id" type="number" placeholder="id" hidden/>
 				<input name="quantity" type="number" placeholder="quantity" />
 				<input name="name" type="text" placeholder="name" />
 				<input name="category" type="text" placeholder="category" />
 				<input name="newselector" type="number" value=0 hidden/>
+				<input name="description" placeholder="description of item" value='' style="height: 100px"></input>
 				<button class="submitButton" type="submit">submit</button>
 			</form>
 		</div>

@@ -19,6 +19,7 @@ type jsonData struct {
 	Quantity int
 	Name string
 	Category string
+	Description string
 }
 
 func main(){
@@ -32,10 +33,20 @@ func main(){
 	    	ID integer primary key autoincrement,
 	    	Name text,
 	    	Quantity integer,
-			Category text
+		Category text
 		);
 	`
 	_, err = db.Exec(createtable)
+	if err != nil {
+		panic(err)
+	}
+    	createtableDesc := `
+		create table if not exists descriptions (
+	    	ID integer primary key,
+	    	Description text
+		);
+	`
+	_, err = db.Exec(createtableDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -66,6 +77,24 @@ func dash(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getDescription(id int, db *sql.DB) (string) {
+	description := ""
+	rows, err := db.Query("SELECT Description FROM descriptions WHERE ID=?", id)
+	if err != nil {
+		panic(err);
+		return "Error"
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&description)
+		if err != nil {
+			panic(err);
+			return "Error"
+		}
+	}
+	return description
+}
+
 func getInventory(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if (r.Method == "GET") {
 		rows, err := db.Query("SELECT * FROM entries;")
@@ -83,6 +112,9 @@ func getInventory(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			if err != nil {
 				panic(err)
 			}
+			id := entry.ID
+			description := getDescription(id, db)
+			entry.Description = description
 			entries = append(entries, entry)
 		}
 		if err = rows.Err(); err != nil {
@@ -122,6 +154,18 @@ func addItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}		
+		stmt, err = db.Prepare("INSERT INTO descriptions (ID, Description) VALUES (?, ?)")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+		
+		_, err = stmt.Exec(Data.ID, Data.Description)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}		
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
@@ -149,6 +193,18 @@ func editItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}		
+		stmt, err = db.Prepare("UPDATE descriptions SET Description=? WHERE ID=?")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(Data.Description, Data.ID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}		
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
@@ -164,6 +220,18 @@ func deleteItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 		stmt, err := db.Prepare("DELETE FROM  entries WHERE ID=?")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(Data.ID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}		
+		stmt, err = db.Prepare("DELETE FROM  descriptions WHERE ID=?")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
