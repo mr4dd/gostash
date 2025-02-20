@@ -10,6 +10,7 @@ const fetchData = async () => {
 }
 
 const render = (data) => {
+    parent.innerHTML = ""
     parent.innerHTML += '<button class="new" onClick=newEntry()>+</button>';
     if (data == null) {
         return;
