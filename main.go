@@ -259,7 +259,7 @@ func search(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 		
-		stmt, err := db.Prepare("SELECT * FROM entries WHERE name=? OR category=?;")
+		stmt, err := db.Prepare("SELECT * FROM entries WHERE name COLLATE NOCASE LIKE '%' || ? || '%' OR category COLLATE NOCASE LIKE '%' || ? || '%';")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
