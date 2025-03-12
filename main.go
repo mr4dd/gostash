@@ -281,6 +281,9 @@ func search(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+			id := entry.ID
+			description := getDescription(id, db)
+			entry.Description = description
 			entries = append(entries, entry)
 		}
 		if err = rows.Err(); err != nil {
