@@ -33,7 +33,7 @@ func main(){
 	    	ID integer primary key autoincrement,
 	    	Name text,
 	    	Quantity integer,
-		Category text
+			Category text
 		);
 	`
 	_, err = db.Exec(createtable)
@@ -57,6 +57,7 @@ func main(){
 	http.HandleFunc("/", root)
 	http.HandleFunc("/dashboard", dash)
 	http.HandleFunc("/getinventory", func(w http.ResponseWriter, r *http.Request) {getInventory(w, r, db)})
+	http.HandleFunc("/gettags", func(w http.ResponseWriter, r *http.Request) {getTags(w, r, db)})
 	http.HandleFunc("/additem", func(w http.ResponseWriter, r *http.Request) {addItem(w, r, db)})
 	http.HandleFunc("/edititem", func(w http.ResponseWriter, r *http.Request) {editItem(w, r, db)})
 	http.HandleFunc("/deleteitem", func(w http.ResponseWriter, r *http.Request) {deleteItem(w, r, db)})
@@ -75,6 +76,81 @@ func dash(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+}
+
+func getTags(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if (r.Method == "GET") {
+		rows, err := db.Query("SELECT DISTINCT Category FROM entries WHERE ;")
+		if err != nil {
+			panic(err)
+		}
+		defer rows.Close()
+
+
+		var entries []jsonData
+		
+		for rows.Next(){
+			var entry jsonData
+			err := rows.Scan(&entry.Category)
+			if err != nil {
+				panic(err)
+			}
+			entries = append(entries, entry)
+		}
+		if err = rows.Err(); err != nil {
+        		panic(err)
+    		}
+		
+		Json, err := json.Marshal(entries)
+		if err != nil {
+			panic(err)
+		}
+
+		w.Header().Set("Cache-Control", "max-age=604800")
+		w.Write(Json)
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func addItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if (r.Method == "POST") {
+		var Data jsonData
+
+		err := json.NewDecoder(r.Body).Decode(&Data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		stmt, err := db.Prepare("INSERT INTO entries (ID, Quantity, Name, Category) VALUES (?, ?, ?, ?)")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+		
+		_, err = stmt.Exec(Data.ID, Data.Quantity, Data.Name, Data.Category)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}		
+		stmt, err = db.Prepare("INSERT INTO descriptions (ID, Description) VALUES (?, ?)")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+		
+		_, err = stmt.Exec(Data.ID, Data.Description)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}		
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+
 }
 
 func getDescription(id int, db *sql.DB) (string) {
@@ -133,44 +209,44 @@ func getInventory(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
-func addItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	if (r.Method == "POST") {
-		var Data jsonData
-
-		err := json.NewDecoder(r.Body).Decode(&Data)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		stmt, err := db.Prepare("INSERT INTO entries (ID, Quantity, Name, Category) VALUES (?, ?, ?, ?)")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer stmt.Close()
-		
-		_, err = stmt.Exec(Data.ID, Data.Quantity, Data.Name, Data.Category)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}		
-		stmt, err = db.Prepare("INSERT INTO descriptions (ID, Description) VALUES (?, ?)")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer stmt.Close()
-		
-		_, err = stmt.Exec(Data.ID, Data.Description)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}		
-	} else {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	}
-
-}
+//func addItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+//	if (r.Method == "POST") {
+//		var Data jsonData
+//
+//		err := json.NewDecoder(r.Body).Decode(&Data)
+//		if err != nil {
+//			http.Error(w, err.Error(), http.StatusBadRequest)
+//			return
+//		}
+//		stmt, err := db.Prepare("INSERT INTO entries (ID, Quantity, Name, Category) VALUES (?, ?, ?, ?)")
+//		if err != nil {
+//			http.Error(w, err.Error(), http.StatusInternalServerError)
+//			return
+//		}
+//		defer stmt.Close()
+//		
+//		_, err = stmt.Exec(Data.ID, Data.Quantity, Data.Name, Data.Category)
+//		if err != nil {
+//			http.Error(w, err.Error(), http.StatusInternalServerError)
+//			return
+//		}		
+//		stmt, err = db.Prepare("INSERT INTO descriptions (ID, Description) VALUES (?, ?)")
+//		if err != nil {
+//			http.Error(w, err.Error(), http.StatusInternalServerError)
+//			return
+//		}
+//		defer stmt.Close()
+//		
+//		_, err = stmt.Exec(Data.ID, Data.Description)
+//		if err != nil {
+//			http.Error(w, err.Error(), http.StatusInternalServerError)
+//			return
+//		}		
+//	} else {
+//		w.WriteHeader(http.StatusMethodNotAllowed)
+//	}
+//
+//}
 
 func editItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if (r.Method == "POST") {

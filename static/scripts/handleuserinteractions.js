@@ -22,7 +22,7 @@ function ContainerDisplayManager() {
 };
 
 function newEntry(){
-	form.children[4].value = 0;
+	form.children[5].value = 0;
 	form.children[0].value = parseInt(entries.children[entries.children.length - 1].getAttribute("data-id")) + 1 || 0;
 	ContainerDisplayManager();
 }
@@ -37,9 +37,10 @@ const editButtonPressed = (element) => {
 	const nameValue = firstParent.querySelector('.titleh2').innerText;
 	const name = form.children[2]
 	const categoryValue = firstParent.querySelector('.tag').innerText;
-	const category = form.children[3]
+	const category = form.children[3].disabled ? form.children[4] : form.children[3]
 	const descriptionValue = firstParent.querySelector('.description').innerText;
-	const description = form.children[5]
+	const description = form.children[6]
+    form.children[5].value = 1
 	
 	id.value = firstParent.getAttribute("data-id");
 	quantity.value = quantityValue;
@@ -67,19 +68,19 @@ form.addEventListener("submit", function(event) {
   const jsonObject = {};
   formData.forEach((value, key) => {
   	if (key == "newselector") {
-  		if (value == 0) {
-		  	endpoint = '/additem';
-		  } else {
-		  	endpoint = '/edititem';
-		  }
-  	}else if (key == "id" || key == "quantity") {
+ 		if (value == '0') {
+    	  	endpoint = '/additem';
+    	  } else {
+   	  	endpoint = '/edititem';
+    	  }
+	}else if (key == "id" || key == "quantity") {
   		jsonObject[key] = parseInt(value);	
   	}
   	else {
     	jsonObject[key] = value;
-    }
+   }
   });
-
+  
   fetch(endpoint, {
   	method: 'POST',
   	body: JSON.stringify(jsonObject)

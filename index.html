@@ -29,15 +29,18 @@
 				<input name="id" type="number" placeholder="id" hidden/>
 				<input name="quantity" type="number" placeholder="quantity" />
 				<input name="name" type="text" placeholder="name" />
-				<input name="category" type="text" placeholder="category" />
+                <input name="category" id="cinput" disabled hidden>
+				<select name="category" class="category-select" id="cselect">
+                </select>
 				<input name="newselector" type="number" value=0 hidden/>
 				<input name="description" placeholder="description of item" value='' style="height: 100px"></input>
 				<button class="submitButton" type="submit">submit</button>
 			</form>
+            <button class="new-category">add category</button>
 		</div>
 
 		<script type="text/javascript" src="/static/scripts/fetchResources.js"></script>
 		<script type="text/javascript" src="/static/scripts/handleuserinteractions.js"></script>
 		<script type="text/javascript" src="/static/scripts/searchController.js"></script>
 	</body>
-</html>
+</html

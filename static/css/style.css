@@ -1,4 +1,4 @@
-/* 🌍 Global Reset */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,7 +6,7 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* 🔳 Page Layout */
+
 body {
     min-height: 100vh;
     display: flex;
@@ -14,7 +14,7 @@ body {
     background-color: #f4f4f4;
 }
 
-/* 🔵 Header */
+
 .header {
     width: 100%;
     height: 70px;
@@ -31,7 +31,7 @@ body {
     font-weight: bold;
 }
 
-/* 🔍 Search Button */
+
 .searchButton {
     margin-left: auto;
     background: none;
@@ -54,7 +54,7 @@ body {
     margin: 0;
 }
 
-/* 🏗 Main Content */
+
 .main {
     display: flex;
     justify-content: center;
@@ -62,7 +62,7 @@ body {
     padding: 20px;
 }
 
-/* 📌 Entries (Card Grid) */
+
 .entries {
     display: flex;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -72,7 +72,7 @@ body {
     flex-direction: column;
 }
 
-/* 📝 Entry Card */
+
 .entrycontainer {
     background: white;
     border-radius: 10px;
@@ -86,7 +86,7 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 📄 Entry Content */
+
 .informationDiv {
     display: flex;
     flex-direction: column;
@@ -104,7 +104,7 @@ body {
     margin-top: 5px;
 }
 
-/* 🎛 Action Buttons */
+
 .actionDiv {
     display: flex;
     justify-content: space-between;
@@ -139,7 +139,7 @@ body {
     background-color: #c0392b;
 }
 
-/* ➕ Floating Add Button */
+
 .new {
     position: fixed;
     bottom: 20px;
@@ -162,7 +162,7 @@ body {
     transform: scale(1.1);
 }
 
-/* 📋 Form Pop-up */
+
 .infoContainer {
     position: fixed;
     top: 50%;
@@ -173,11 +173,12 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    display: none; /* Hidden by default */
+    display: none; 
+    flex-direction: column;
     z-index: 1000;
 }
 
-/* ✍ Form Fields */
+
 .formData {
     display: flex;
     flex-direction: column;
@@ -198,7 +199,7 @@ input:focus, select:focus, textarea:focus {
     outline: none;
 }
 
-/* ✅ Submit Button */
+
 .submitButton {
     width: 100%;
     padding: 12px;
@@ -216,7 +217,23 @@ input:focus, select:focus, textarea:focus {
     background: #27ae60;
 }
 
-/* 🔥 Animations */
+.new-category {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #2eccc0;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.new-category:hover {
+    background: #27aea0;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
