@@ -17,10 +17,10 @@ var database string = os.Getenv("DB")
 var dsn string = os.Getenv("DSN")
 func init() {
 	if database == "" {
-		database = os.Getenv("HOME") + "/.local/inventory.sqlite3"
+		database = "root@tcp(localhost:3306)/inventory"
 	}
 	if dsn == "" {
-		dsn = "sqlite3"
+		dsn = "mysql"
 	}
 }
 
