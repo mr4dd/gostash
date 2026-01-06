@@ -62,9 +62,9 @@ const fetchDataAndRender = async () => {
 };
 
 const getCategories = async () => {
-    const data = await fetchData("/getTags");
+    const data = await fetchData("/gettags");
     data.forEach(category => {
-        categories.innerHTML += `<option value=${category.Category}>${category.Category}</option>`
+        categories.innerHTML += `<option value=${category.category}>${category.category}</option>`
     })
 }
 

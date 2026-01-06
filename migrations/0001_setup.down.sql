@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS entries;
+DROP TABLE IF EXISTS descriptions;
+DROP TABLE IF EXISTS categories;
