@@ -268,8 +268,8 @@ func search(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			FROM entries e
 			JOIN categories c ON e.category = c.id
 			JOIN descriptions d ON e.description = d.id
-			WHERE e.name COLLATE NOCASE LIKE '%' || ? || '%'
-			OR c.category COLLATE NOCASE LIKE '%' || ? || '%'
+			WHERE e.name LIKE CONCAT('%', ?, '%')
+			OR c.category LIKE CONCAT('%', ?, '%')
 		`, Data.Name, Data.Category)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
