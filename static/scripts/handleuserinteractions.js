@@ -27,30 +27,6 @@ function newEntry(){
 	ContainerDisplayManager();
 }
 
-const editButtonPressed = (element) => {
-	const form = document.querySelector(".formData");
-	form.children[4].value = 1; //for endpoint selection
-	const id = form.children[0]
-	const firstParent = element.parentNode.parentNode;
-	const quantityValue = firstParent.querySelector('.count').innerText;
-	const quantity = form.children[1]
-	const nameValue = firstParent.querySelector('.titleh2').innerText;
-	const name = form.children[2]
-	const categoryValue = firstParent.querySelector('.tag').innerText;
-	const category = form.children[3].disabled ? form.children[4] : form.children[3]
-	const descriptionValue = firstParent.querySelector('.description').innerText;
-	const description = form.children[6]
-    form.children[5].value = 1
-	
-	id.value = firstParent.getAttribute("data-id");
-	quantity.value = quantityValue;
-	name.value = nameValue;
-	category.value = categoryValue;
-	description.value = descriptionValue;
-	
-	ContainerDisplayManager();
-};
-
 function clearForm() {
 	const children = form.children;
 	for (let i = 0; i < children.length - 1; i++){
@@ -90,23 +66,40 @@ form.addEventListener("submit", function(event) {
   fetchDataAndRender();
 });
 
-function remove(element) {
-		const confirmation = confirm("are you sure you want to delete this entry?");
-		if (confirmation == false) {
-			return;
-		} else {
-			const parent = element.parentNode.parentNode;
-			const jsonObject = {}
-			jsonObject["id"] = parseInt(parent.getAttribute("data-id"));
-			console.log(jsonObject["id"]);
-			jsonObject["quantity"] = 0;
-			jsonObject["name"] = "null";
-			jsonObject["category"] = "null";
-			fetch("/deleteitem", {
-				method: 'POST',
-				body: JSON.stringify(jsonObject)
-			});
+const editButtonPressed = (button) => {
+    const form = document.querySelector(".formData");
+    
+    const card = button.closest('.entrycontainer');
 
-			parent.remove()
-	 }
-} 
+    const idValue          = card.getAttribute("data-id");
+    const nameValue        = card.querySelector('.js-name').innerText;
+    const categoryValue    = card.querySelector('.js-category').innerText;
+    const quantityValue    = card.querySelector('.js-quantity').innerText;
+    const descriptionValue = card.querySelector('.js-description').innerText;
+
+    form.children[0].value = idValue;
+    form.children[1].value = quantityValue;
+    form.children[2].value = nameValue;
+    
+    const categoryField = form.children[3].disabled ? form.children[4] : form.children[3];
+    categoryField.value = categoryValue;
+
+    form.children[4].value = 1; 
+    form.children[5].value = 1;
+    form.children[6].value = descriptionValue;
+
+    ContainerDisplayManager();
+};
+
+function remove(button) {
+    if (!confirm("Are you sure you want to delete this?")) return;
+
+    const card = button.closest('.entrycontainer');
+    const id = card.getAttribute("data-id");
+
+    fetch("/deleteitem", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: parseInt(id), quantity: 0, name: "null", category: "null" })
+    }).then(() => card.remove());
+}

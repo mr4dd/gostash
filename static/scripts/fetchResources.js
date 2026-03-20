@@ -25,29 +25,26 @@ const render = (data) => {
     parent.innerHTML += `<p class="itemCount">Found ${data.length} items!</p>`
     try {
         data.forEach((entry, index) => {
-            const container = document.createElement("div");
-            container.className = "entrycontainer";
-            container.setAttribute("data-id", entry.ID);
-            container.innerHTML = `
-                <div class="informationDiv">
-                    <div class="entrytitle">
-                        <h2 class="titleh2">${entry.Name}</h2>
-                        <h2 class="description">${entry.Description}</h2>
-                    </div>
-                    <div class="secondaryInfo">
-                        <div class="tags">
-                            <p class="tag">${entry.Category}</p>
+        const container = document.createElement("div");
+        container.className = "entrycontainer";
+        container.setAttribute("data-id", entry.ID);
+        container.innerHTML = `
+            <div class="informationDiv">
+                <div class="container">
+                    <div class="card style-modern">
+                        <div class="card-content">
+                            <span class="badge js-category">${entry.Category}</span>
+                            <h3 class="js-name">${entry.Name}</h3>
+                            <p><span class="js-quantity">${entry.Quantity}</span> units</p>
+                            <small class="js-description">${entry.Description}</small>
                         </div>
-                        <div class="count">
-                            <p class="p">${entry.Quantity}</p>
+                        <div class="actionDiv">
+                            <button class="edit" onclick="editButtonPressed(this)">${editSVG}</button>
+                            <button class="remove" onclick="remove(this)">${deleteSVG}</button>
                         </div>
                     </div>
                 </div>
-                <div class="actionDiv">
-                    <button class="edit" onClick="editButtonPressed(this)">${editSVG}</button>
-                    <button class="remove" onClick="remove(this)">${deleteSVG}</button>
-                </div>
-            `;
+            </div>`;
             container.dataset.index = index;
             parent.appendChild(container);
         });
