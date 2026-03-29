@@ -219,7 +219,7 @@ func editItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			descID, _ = insertDescription(db, Data.Description)
 		}
 
-		stmt, err = db.Prepare("UPDATE descriptions SET description=? WHERE id=?")
+		stmt, err = db.Prepare("UPDATE descriptions SET description=? WHERE id=(SELECT description FROM entries WHERE id=?)")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
