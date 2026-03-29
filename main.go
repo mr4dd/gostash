@@ -225,7 +225,7 @@ func editItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 		defer stmt.Close()
-		stmt.Exec(Data.Description, descID)
+		stmt.Exec(Data.Description, Data.ID)
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
